@@ -1,0 +1,5 @@
+<h2>Edit Battle</h2>
+
+<%= render "form.html", Map.put(assigns, :action, battle_path(@conn, :update, @battle)) %>
+
+<span><%= link "Back", to: battle_path(@conn, :index) %></span>

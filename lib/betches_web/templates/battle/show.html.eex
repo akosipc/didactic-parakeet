@@ -1,0 +1,13 @@
+<h2>Show Battle</h2>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @battle.title %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: battle_path(@conn, :edit, @battle) %></span>
+<span><%= link "Back", to: battle_path(@conn, :index) %></span>

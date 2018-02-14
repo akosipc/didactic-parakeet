@@ -1,0 +1,26 @@
+<h2>Listing Battles</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for battle <- @battles do %>
+    <tr>
+      <td><%= battle.title %></td>
+
+      <td class="text-right">
+        <span><%= link "Show", to: battle_path(@conn, :show, battle), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Edit", to: battle_path(@conn, :edit, battle), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: battle_path(@conn, :delete, battle), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Battle", to: battle_path(@conn, :new) %></span>
