@@ -17,7 +17,10 @@ defmodule BetchesWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    resources "/battles", BattleController
+    resources "/battles", BattleController do
+      resources "/bettables", BettableController
+    end
+    resources "/bettables", BettableController
   end
 
   # Other scopes may use custom stacks.

@@ -1,0 +1,13 @@
+<h2>Show Bettable</h2>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @bettable.title %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: bettable_path(@conn, :edit, @bettable) %></span>
+<span><%= link "Back", to: bettable_path(@conn, :index) %></span>

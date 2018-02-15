@@ -13,7 +13,10 @@ defmodule Betches.Core.Battle do
     field :starts_at, :utc_datetime
     field :ends_at, :utc_datetime
     field :accepts_at, :utc_datetime
+
     embeds_one :meta, Betches.Core.Battle.Meta
+
+    has_many :bettables, Betches.Core.Bettable
 
     timestamps()
   end

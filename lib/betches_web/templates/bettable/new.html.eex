@@ -1,0 +1,5 @@
+<h2>New Bettable</h2>
+
+<%= render "form.html", Map.put(assigns, :action, bettable_path(@conn, :create)) %>
+
+<span><%= link "Back", to: bettable_path(@conn, :index) %></span>

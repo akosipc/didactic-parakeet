@@ -5,15 +5,23 @@ defmodule Betches.CoreTest do
 
   defp adjust_time(duration), do: Timex.now() |> Timex.shift(duration)
 
-  describe "battles" do
+  describe "battles and bettables" do
     alias Betches.Core.Battle
+    alias Betches.Core.Bettable
 
-    @valid_attrs %{
+    @valid_attrs_for_battles %{
       title: "Some Title",
       description: "Some Description",
       accepts_at: Timex.now() |> Timex.shift(days: 3),
       starts_at: Timex.now() |> Timex.shift(days: 7),
       ends_at: Timex.now() |> Timex.shift(days: 14)
+    }
+    @valid_attrs_for_bettables %{
+      title: "Some Title",
+      description: "Some Description",
+      winning_condition: false,
+      winner: false,
+      sidebet: false
     }
     @update_attrs %{ title: "New Title" }
     @invalid_attrs %{ title: "" }
@@ -21,12 +29,86 @@ defmodule Betches.CoreTest do
     def battle_fixture(attrs \\ %{}) do
       {:ok, battle} =
         attrs
-        |> Map.merge(@valid_attrs, fn (_key, first_value, _second_value) -> 
-          first_value
-        end)
+        |> Map.merge(@valid_attrs_for_battles, fn (_key, first_value, _) -> first_value end)
         |> Core.create_battle()
 
       battle
+    end
+
+    def bettable_fixture(attrs \\ %{}) do
+      {:ok, bettable} = 
+        attrs
+        |> Map.merge(@valid_attrs_for_bettables, fn (_key, first_value, _) -> first_value end)
+        |> Core.create_bettable()
+
+      bettable
+    end
+
+    test "bettables/1 returns all bettables" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id})
+
+      assert Core.bettables(battle.id) == [bettable]
+    end
+
+    test "bettables/2 paseed `:sidebets` returns all bettables that are sidebets" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id, sidebet: true})
+
+      assert Core.bettables(battle.id, :sidebets) == [bettable]
+    end
+
+    test "bettables/2 paseed `:winning_conditions` returns all bettables that are sidebets" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id, winning_condition: true})
+
+      assert Core.bettables(battle.id, :winning_conditions) == [bettable]
+    end
+
+    test "get_bettable!/2 returns the bettable with given id" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id})
+
+      assert Core.get_bettable!(battle.id, bettable.id) == bettable
+    end
+
+    test "create_bettable/1 with valid data creates a bettable" do
+      battle = battle_fixture()
+      assert {:ok, %Bettable{} = bettable} = Core.create_bettable(Enum.into(@valid_attrs_for_bettables, %{battle_id: battle.id}))
+      assert bettable.title == "Some Title"
+    end
+
+    test "create_bettable/1 with invalid data returns error changeset" do
+      battle = battle_fixture()
+      assert {:error, %Ecto.Changeset{}} = Core.create_bettable(Enum.into(@invalid_attrs, %{battle_id: battle.id}))
+    end
+
+    test "update_bettable/2 with valid data updates the bettable" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id})
+      assert {:ok, bettable} = Core.update_bettable(bettable, @update_attrs)
+      assert %Bettable{} = bettable
+      assert bettable.title == "New Title"
+    end
+
+    test "update_bettable/2 with invalid data returns error changeset" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id})
+      assert {:error, %Ecto.Changeset{}} = Core.update_bettable(bettable, @invalid_attrs)
+      assert bettable == Core.get_bettable!(battle.id, bettable.id)
+    end
+
+    test "delete_bettable/1 deletes the bettable" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id})
+
+      assert {:ok, %Bettable{}} = Core.delete_bettable(bettable)
+    end
+
+    test "change_bettable/1 returns a bettable changeset" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id})
+      assert %Ecto.Changeset{} = Core.change_bettable(bettable)
     end
 
     test "battles/0 returns all battles" do
@@ -72,7 +154,7 @@ defmodule Betches.CoreTest do
     end
 
     test "create_battle/1 with valid data creates a battle" do
-      assert {:ok, %Battle{} = battle} = Core.create_battle(@valid_attrs)
+      assert {:ok, %Battle{} = battle} = Core.create_battle(@valid_attrs_for_battles)
       assert battle.title == "Some Title"
     end
 
