@@ -5,7 +5,7 @@ defmodule Betches.CoreTest do
 
   defp adjust_time(duration), do: Timex.now() |> Timex.shift(duration)
 
-  describe "battles and bettables" do
+  describe "battles, bettables and bets" do
     alias Betches.Core.Battle
     alias Betches.Core.Bettable
 
@@ -22,6 +22,12 @@ defmodule Betches.CoreTest do
       winning_condition: false,
       winner: false,
       sidebet: false
+    }
+    @valid_attrs_for_bets %{
+      amount: 20.00,
+      currency: "USD",
+      status: "pending",
+      transaction: %{}
     }
     @update_attrs %{ title: "New Title" }
     @invalid_attrs %{ title: "" }
@@ -42,6 +48,24 @@ defmodule Betches.CoreTest do
         |> Core.create_bettable()
 
       bettable
+    end
+
+    def bet_fixture(attrs \\ %{}) do
+      {:ok, bet} =
+        attrs
+        |> Map.merge(@valid_attrs_for_bets, fn (_key, first_value, _) -> first_value end)
+        |> Core.create_bet()
+    
+      bet
+    end
+    
+    test "bets/1 returns all bettables" do
+      battle = battle_fixture()
+      bettable = bettable_fixture(%{battle_id: battle.id})
+      bet = bet_fixture(%{battle_id: battle.id, bettable_id: bettable.id})
+
+      assert Core.bets(%{battle_id: battle.id}) == [bet]
+      assert Core.bets(%{bettable_id: bettable.id}) == [bet]
     end
 
     test "bettables/1 returns all bettables" do

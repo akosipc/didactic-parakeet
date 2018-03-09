@@ -6,6 +6,7 @@ defmodule BetchesWeb.BettableController do
 
   def index(conn, %{"battle_id" => battle_id}) do
     bettables = Core.bettables(battle_id)
+
     render(conn, "index.html", bettables: bettables)
   end
 
@@ -30,8 +31,8 @@ defmodule BetchesWeb.BettableController do
     render(conn, "show.html", bettable: bettable)
   end
 
-  def edit(conn, %{"id" => id}) do
-    bettable = Core.get_bettable!(id)
+  def edit(conn, %{"id" => id, "battle_id" => battle_id}) do
+    bettable = Core.get_bettable!(battle_id, id)
     changeset = Core.change_bettable(bettable)
     render(conn, "edit.html", bettable: bettable, changeset: changeset)
   end

@@ -1,0 +1,13 @@
+<h2>Show Bet</h2>
+
+<ul>
+
+  <li>
+    <strong>Amount:</strong>
+    <%= @bet.amount %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: bet_path(@conn, :edit, @bet) %></span>
+<span><%= link "Back", to: bet_path(@conn, :index) %></span>

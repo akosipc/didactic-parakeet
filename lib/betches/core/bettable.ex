@@ -12,9 +12,10 @@ defmodule Betches.Core.Bettable do
     field :winner, :boolean
     field :sidebet, :boolean
 
-    embeds_one :meta, Betches.Core.Bettable.Meta
+    embeds_one :meta, Meta
 
     belongs_to :battle, Betches.Core.Battle
+    has_many :bets, Betches.Core.Bet
 
     timestamps()
   end

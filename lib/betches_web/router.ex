@@ -19,7 +19,9 @@ defmodule BetchesWeb.Router do
     get "/", PageController, :index
     resources "/battles", BattleController do
       resources "/bettables", BettableController
+      resources "/bets", BetController
     end
+    resources "/bets", BetController
     resources "/bettables", BettableController
   end
 

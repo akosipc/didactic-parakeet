@@ -1,0 +1,5 @@
+<h2>Edit Bet</h2>
+
+<%= render "form.html", Map.put(assigns, :action, bet_path(@conn, :update, @bet)) %>
+
+<span><%= link "Back", to: bet_path(@conn, :index) %></span>
